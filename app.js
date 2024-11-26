@@ -71,7 +71,6 @@ function btnPress() {
     userClr = btn.getAttribute("id");
     userSeq.push(userClr)
 
-    console.log(gameSeq);
     checkAns(userSeq.length - 1);
 }
 
