@@ -8,11 +8,10 @@ let level = 0;
 
 let h2 = document.querySelector('h2');
 
-document.addEventListener('click', function () {
+document.addEventListener('keydown', function () {
     if (started == false) {
         console.log("Game Started.");
         started = true;
-
         levelUp();
     }
 })
@@ -32,22 +31,40 @@ function userFlash(btn) {
 }
 
 function levelUp() {
+    userSeq = [];
     level++;
     h2.innerText = `Level ${level}`;
 
-    //random btn choose.
-    let randomIdx = Math.floor(Math.random()*4)
+    //random btn choose and push in sequence.
+    let randomIdx = Math.floor(Math.random() * 4)
     let randomClr = btns[randomIdx];
     let randomBtn = document.querySelector(`.${randomClr}`);
-    
+    gameSeq.push(randomClr)
     //flash
     gameFlash(randomBtn);
 }
 
+function checkAns(idx) {
+    if (userSeq[idx] === gameSeq[idx]) {
+        if (userSeq.length == gameSeq.length) {
+            setTimeout(levelUp, 1000);
+        }
+    }
+    else {
+        h2.innerText = "Game Over! Press Any Key to Start."
+    }
+}
 
-function btnPress(){
+function btnPress() {
     let btn = this;
     userFlash(btn);
+
+    userClr = btn.getAttribute("id");
+    userSeq.push(userClr)
+
+    console.log(userSeq)
+    console.log(gameSeq)
+    checkAns(userSeq.length - 1);
 }
 
 let allBtns = document.querySelectorAll('.btn');
