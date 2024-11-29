@@ -8,15 +8,16 @@ let level = 0;
 let highScore = 0;
 
 let h2 = document.querySelector('#level');
+let startBtn = document.querySelector('#startBtn')
 
-document.addEventListener('keydown', function () {
+startBtn.addEventListener('click', function () {
     if (started == false) {
-        console.log("Game Started.");
         started = true;
         levelUp();
     }
 })
 
+//#region Flash Functions
 function gameFlash(btn) {
     btn.classList.add('gameFlash');
     setTimeout(() => {
@@ -30,6 +31,7 @@ function userFlash(btn) {
         btn.classList.remove('userFlash');
     }, 150);
 }
+//#endregion
 
 function levelUp() {
     userSeq = [];
@@ -42,33 +44,42 @@ function levelUp() {
     let randomClr = btns[randomIdx];
     let randomBtn = document.querySelector(`.${randomClr}`);
     gameSeq.push(randomClr)
+
     //flash
     gameFlash(randomBtn);
 }
 
 function checkAns(idx) {
     if (userSeq[idx] === gameSeq[idx]) {
-        if (userSeq.length == gameSeq.length) {
+        if (userSeq.length === gameSeq.length) {
             setTimeout(levelUp, 1000);
-            
+
         }
     }
     else {
-        h2.innerHTML = `Game Over! Your Score is <b>${level-1}</b> </br>Press Any Key to Start.`;
+        highScore = Math.max(highScore, level - 1);
+        h2.innerHTML = `Game Over! Your Score is <b>${level - 1}</b> </br>Press the Start Button to Restart the game.`;
         document.querySelector('body').style.backgroundColor = 'red';
         setTimeout(() => {
             document.querySelector('body').style.backgroundColor = 'white';
         }, 150);
-        document.querySelector('#highScore').innerHTML = `High Score: ${level - 1  > highScore ? level - 1 : highScore}`;
+        document.querySelector('#highScore').innerText = `High Score: ${highScore}`;
+
         reset();
     }
 }
 
 function btnPress() {
+    //Ignore if game not started.
+    if (!started) {
+        return;
+    }
+
     let btn = this;
+    console.log(btn);
     userFlash(btn);
 
-    userClr = btn.getAttribute("id");
+    let userClr = btn.getAttribute("id");
     userSeq.push(userClr)
 
     checkAns(userSeq.length - 1);
@@ -76,7 +87,8 @@ function btnPress() {
 
 let allBtns = document.querySelectorAll('.btn');
 for (const btn of allBtns) {
-    btn.addEventListener('click', btnPress)
+
+    btn.addEventListener('click', btnPress);
 }
 
 function reset() {
